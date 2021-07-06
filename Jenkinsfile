@@ -45,32 +45,6 @@ pipeline {
                  }                 
              } 
          }
-
-         
-         stage('Build the image') { 
-            steps { 
-                script {
-                    unstash name:"artifact"
-                    docker.withTool('docker') {
-                        docker.withRegistry('https://artifactory.dagility.com', 'aleesha-registry'){
-                            docker.build(registry + "maven:latest").push()
-                        }
-                    }
-                } 
-            }
-         }
-         
-         stage('Deploy the application') {
-            steps {
-                ansiblePlaybook (
-                credentialsId: 'aleesha-private-key',
-                disableHostKeyChecking: true,
-                extraVars: [password : "${params.registry_pass}"],
-                installation: 'ansible',
-                inventory: 'ansible/inventory.ini',
-                playbook: 'ansible/maven.yml')
-            }
-        }
     }
 }
 
