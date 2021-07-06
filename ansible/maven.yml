@@ -1,0 +1,68 @@
+---
+- name: Docker installation using Ansible
+  hosts: maven
+  gather_facts: False
+  become: true
+  tasks:
+  - name: Install packages
+    ansible.builtin.yum:
+      name: '*'
+      state: latest
+      update_cache: yes
+      update_only: yes
+
+  - name: Install required system packages
+    ansible.builtin.yum:
+      name: docker
+      state: present
+      update_cache: yes
+
+  - name: Install docker module for python
+    ansible.builtin.pip:
+      name: "{{ item.name }}"
+      state: present
+      executable: pip3
+    with_items:
+    - { name: docker}
+    - { name: six}
+
+  - name: Starting docker service
+    ansible.builtin.service:
+      name: "docker"
+      state: started
+      enabled: yes
+
+  - name: Deleting containers
+    community.general.docker_container:
+     name: maven-app
+     state: absent
+  
+  - name: Logging in to registry
+    community.docker.docker_login:
+      registry: https://artifactory.dagility.com
+      username: 'services-training'
+      password: "{{ password }}"
+      state: present
+ 
+  - name: Docker image pull
+    community.docker.docker_image:
+      source: pull
+      name: artifactory.dagility.com/docker-services-training/aleesha/maven:latest
+      
+
+  - name: Creating container to run Maven_app
+    community.general.docker_container:
+     name: maven-app
+     image: artifactory.dagility.com/docker-services-training/aleesha/maven:latest
+     ports:
+       - "3000:8080"
+     state: started 
+     command: ["sleep", "infinity"]
+
+  
+      
+
+  
+  
+
+

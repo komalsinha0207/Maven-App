@@ -1,0 +1,12 @@
+/target
+.classpath
+.settings
+.project
+.git/
+.vscode/
+.gitignore.swp
+JenkinsfileTower
+README
+openshift/
+provision/
+
