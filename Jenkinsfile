@@ -8,7 +8,13 @@ pipeline {
     }
     
     stages {
-         stage('Build') {
+       
+        stage('Clone') {
+            steps {
+                checkout scm
+            }
+        } 
+        stage('Build') {
              steps {
                  script {
                      sh "mvn -B -Dmaven.test.skip=true clean package"
