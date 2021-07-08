@@ -40,7 +40,7 @@ pipeline {
              } 
          }
 
-         stage('Static analysis') {
+         stage('SonarCube analysis') {
              steps {
                  script {
                      withSonarQubeEnv('sonar'){
