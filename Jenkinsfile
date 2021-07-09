@@ -30,6 +30,15 @@ pipeline {
                  }
              } 
          }
+        stage('Integration Test') {
+             steps {
+                 script {
+                     sh "mvn -B clean verify -Dsurefire.skip=true"
+                     stash name: 'it_tests', includes: 'target/failsafe-reports/**'
+                 }                
+             } 
+         }
+
 
         
 
